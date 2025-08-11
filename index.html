@@ -65,6 +65,11 @@
         background-color: limegreen;
         width: 0%;
         transition: width 0.1s linear;
+        color: black;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 </style>
 </head>
@@ -127,7 +132,7 @@
 
     <div id="buffStatus" class="msg"></div>
     <div class="progress-container hidden" id="progressContainer">
-        <div class="progress-bar" id="progressBar"></div>
+        <div class="progress-bar" id="progressBar">0%</div>
     </div>
 </div>
 
@@ -141,7 +146,6 @@
         if (key === CORRECT_KEY) {
             msg.textContent = "Xác minh thành công!";
             msg.className = "msg success";
-            document.body.style.backgroundColor = "#0077b6"; // xanh nước biển
             document.getElementById("verify-section").classList.add("hidden");
             document.getElementById("main-section").classList.remove("hidden");
         } else {
@@ -159,14 +163,16 @@
         status.className = "msg";
         progressContainer.classList.remove("hidden");
         progressBar.style.width = "0%";
+        progressBar.textContent = "0%";
 
         let percent = 0;
         let interval = setInterval(() => {
             percent++;
             progressBar.style.width = percent + "%";
+            progressBar.textContent = percent + "%";
             if (percent >= 100) {
                 clearInterval(interval);
-                status.textContent = "Đã thành công!";
+                status.innerHTML = "Đã thành công! ☠️";
                 status.className = "msg success";
             }
         }, 50); // tốc độ chạy
