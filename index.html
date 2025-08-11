@@ -7,177 +7,106 @@
 <style>
     body {
         background-color: black;
-        font-family: Arial, sans-serif;
         color: yellow;
+        font-family: Arial, sans-serif;
         text-align: center;
-        padding: 20px;
     }
-    .hidden { display: none; }
-    input[type="text"] {
-        padding: 8px;
-        font-size: 16px;
+    .hidden {
+        display: none;
+    }
+    .slider {
+        width: 200px;
     }
     button {
         padding: 10px 20px;
         font-size: 16px;
-        margin: 10px;
-        border: none;
         cursor: pointer;
-    }
-    .verify-btn {
-        background-color: #00aaff;
-        color: white;
+        border: none;
         border-radius: 5px;
     }
-    .red-btn {
+    #buffBtn {
         background-color: red;
         color: white;
-        border-radius: 5px;
         font-weight: bold;
     }
-    .msg {
-        margin: 10px;
-        font-size: 18px;
-    }
-    .success { color: lightgreen; }
-    .error { color: red; }
-    .option {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin: 8px 0;
-        padding: 0 20px;
-    }
-    input[type="range"] {
-        width: 150px;
-    }
-    .progress-container {
-        margin-top: 20px;
+    #progressBar {
         width: 80%;
-        background-color: #222;
-        border-radius: 5px;
+        height: 20px;
+        background-color: #333;
+        border-radius: 10px;
         overflow: hidden;
-        margin-left: auto;
-        margin-right: auto;
+        margin: 20px auto;
     }
-    .progress-bar {
-        height: 25px;
-        background-color: limegreen;
-        width: 0%;
-        transition: width 0.1s linear;
+    #progress {
+        height: 100%;
+        width: 0;
+        background-color: lime;
+        text-align: center;
         color: black;
         font-weight: bold;
-        display: flex;
-        align-items: center;
-        justify-content: center;
     }
 </style>
 </head>
 <body>
 
-<!-- Phần nhập key -->
-<div id="verify-section">
-    <h2>Nhập key</h2>
-    <input type="text" id="keyInput" placeholder="Nhập key">
-    <button class="verify-btn" onclick="verifyKey()">Xác minh key</button>
-    <div id="verifyMsg" class="msg"></div>
+<div id="keyScreen">
+    <h2>Nhập Key để vào:</h2>
+    <input type="password" id="keyInput" placeholder="Nhập key...">
+    <button onclick="checkKey()">OK</button>
+    <p id="keyError" style="color:red;"></p>
 </div>
 
-<!-- Phần chọn chức năng -->
-<div id="main-section" class="hidden">
+<div id="mainScreen" class="hidden">
     <h2>Chọn các chức năng</h2>
 
-    <!-- Thanh trượt -->
-    <div class="option">
-        <span>Aimlock</span>
-        <input type="range" id="aimlock" min="1" max="100" value="50">
-    </div>
-    <div class="option">
-        <span>Buff nhạy</span>
-        <input type="range" id="buffnhay" min="1" max="100" value="50">
-    </div>
-    <div class="option">
-        <span>Buff màn</span>
-        <input type="range" id="buffman" min="1" max="100" value="50">
+    <div>
+        Aimlock <input type="range" min="1" max="100" value="50" class="slider"><br><br>
+        Buff nhạy <input type="range" min="1" max="100" value="50" class="slider"><br><br>
+        Buff màn <input type="range" min="1" max="100" value="50" class="slider"><br><br>
+
+        INCREASE DPI <input type="checkbox"><br><br>
+        SHARPEN DISPLAY <input type="checkbox"><br><br>
+        ENHANCE BRIGHTNESS <input type="checkbox"><br><br>
+        ANTI-LAG MODE <input type="checkbox"><br><br>
+        BUFF TOUCH INPUT <input type="checkbox"><br><br>
+        OPTIMIZE FPS <input type="checkbox"><br><br>
     </div>
 
-    <!-- Checkbox -->
-    <div class="option">
-        <span>INCREASE DPI</span>
-        <input type="checkbox" id="dpi">
+    <button id="buffBtn" onclick="startBuff()">BUFF MAX</button>
+    <div id="progressBar" class="hidden">
+        <div id="progress">0%</div>
     </div>
-    <div class="option">
-        <span>SHARPEN DISPLAY</span>
-        <input type="checkbox" id="sharpen">
-    </div>
-    <div class="option">
-        <span>ENHANCE BRIGHTNESS</span>
-        <input type="checkbox" id="brightness">
-    </div>
-    <div class="option">
-        <span>ANTI-LAG MODE</span>
-        <input type="checkbox" id="antilag">
-    </div>
-    <div class="option">
-        <span>BUFF TOUCH INPUT</span>
-        <input type="checkbox" id="touch">
-    </div>
-    <div class="option">
-        <span>OPTIMIZE FPS</span>
-        <input type="checkbox" id="fps">
-    </div>
-
-    <!-- Nút Buff Max -->
-    <button class="red-btn" onclick="startBuff()">BUFF MAX</button>
-
-    <div id="buffStatus" class="msg"></div>
-    <div class="progress-container hidden" id="progressContainer">
-        <div class="progress-bar" id="progressBar">0%</div>
-    </div>
+    <h3 id="successMsg" style="color:lime;" class="hidden">☠️ Đã thành công!</h3>
 </div>
 
 <script>
-    const CORRECT_KEY = "FF2025";
+function checkKey() {
+    let key = document.getElementById("keyInput").value;
+    if (key === "FF2025") {
+        document.getElementById("keyScreen").classList.add("hidden");
+        document.getElementById("mainScreen").classList.remove("hidden");
+    } else {
+        document.getElementById("keyError").textContent = "Sai key!";
+    }
+}
 
-    function verifyKey() {
-        let key = document.getElementById("keyInput").value.trim();
-        let msg = document.getElementById("verifyMsg");
-
-        if (key === CORRECT_KEY) {
-            msg.textContent = "Xác minh thành công!";
-            msg.className = "msg success";
-            document.getElementById("verify-section").classList.add("hidden");
-            document.getElementById("main-section").classList.remove("hidden");
-        } else {
-            msg.textContent = "Sai key!";
-            msg.className = "msg error";
+function startBuff() {
+    let progress = 0;
+    document.getElementById("progressBar").classList.remove("hidden");
+    document.getElementById("successMsg").classList.add("hidden");
+    let bar = document.getElementById("progress");
+    let interval = setInterval(() => {
+        progress++;
+        bar.style.width = progress + "%";
+        bar.textContent = progress + "%";
+        if (progress >= 100) {
+            clearInterval(interval);
+            document.getElementById("successMsg").classList.remove("hidden");
         }
-    }
-
-    function startBuff() {
-        let status = document.getElementById("buffStatus");
-        let progressContainer = document.getElementById("progressContainer");
-        let progressBar = document.getElementById("progressBar");
-
-        status.textContent = "Đang thực hiện...";
-        status.className = "msg";
-        progressContainer.classList.remove("hidden");
-        progressBar.style.width = "0%";
-        progressBar.textContent = "0%";
-
-        let percent = 0;
-        let interval = setInterval(() => {
-            percent++;
-            progressBar.style.width = percent + "%";
-            progressBar.textContent = percent + "%";
-            if (percent >= 100) {
-                clearInterval(interval);
-                status.innerHTML = "Đã thành công! ☠️";
-                status.className = "msg success";
-            }
-        }, 50); // tốc độ chạy
-    }
+    }, 50);
+}
 </script>
 
 </body>
 </html>
+
