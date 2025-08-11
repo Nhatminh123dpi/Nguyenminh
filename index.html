@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Buff Tool</title>
+<style>
+    body {
+        background-color: black;
+        font-family: Arial, sans-serif;
+        color: yellow;
+        text-align: center;
+        padding: 20px;
+    }
+    .hidden { display: none; }
+    input[type="text"] {
+        padding: 8px;
+        font-size: 16px;
+    }
+    button {
+        padding: 10px 20px;
+        font-size: 16px;
+        margin: 10px;
+        border: none;
+        cursor: pointer;
+    }
+    .verify-btn {
+        background-color: #00aaff;
+        color: white;
+        border-radius: 5px;
+    }
+    .red-btn {
+        background-color: red;
+        color: white;
+        border-radius: 5px;
+        font-weight: bold;
+    }
+    .msg {
+        margin: 10px;
+        font-size: 18px;
+    }
+    .success { color: lightgreen; }
+    .error { color: red; }
+    .option {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 8px 0;
+        padding: 0 20px;
+    }
+    input[type="range"] {
+        width: 150px;
+    }
+    .progress-container {
+        margin-top: 20px;
+        width: 80%;
+        background-color: #222;
+        border-radius: 5px;
+        overflow: hidden;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .progress-bar {
+        height: 25px;
+        background-color: limegreen;
+        width: 0%;
+        transition: width 0.1s linear;
+    }
+</style>
+</head>
+<body>
+
+<!-- Phần nhập key -->
+<div id="verify-section">
+    <h2>Nhập key</h2>
+    <input type="text" id="keyInput" placeholder="Nhập key">
+    <button class="verify-btn" onclick="verifyKey()">Xác minh key</button>
+    <div id="verifyMsg" class="msg"></div>
+</div>
+
+<!-- Phần chọn chức năng -->
+<div id="main-section" class="hidden">
+    <h2>Chọn các chức năng</h2>
+
+    <!-- Thanh trượt -->
+    <div class="option">
+        <span>Aimlock</span>
+        <input type="range" id="aimlock" min="1" max="100" value="50">
+    </div>
+    <div class="option">
+        <span>Buff nhạy</span>
+        <input type="range" id="buffnhay" min="1" max="100" value="50">
+    </div>
+    <div class="option">
+        <span>Buff màn</span>
+        <input type="range" id="buffman" min="1" max="100" value="50">
+    </div>
+
+    <!-- Checkbox -->
+    <div class="option">
+        <span>INCREASE DPI</span>
+        <input type="checkbox" id="dpi">
+    </div>
+    <div class="option">
+        <span>SHARPEN DISPLAY</span>
+        <input type="checkbox" id="sharpen">
+    </div>
+    <div class="option">
+        <span>ENHANCE BRIGHTNESS</span>
+        <input type="checkbox" id="brightness">
+    </div>
+    <div class="option">
+        <span>ANTI-LAG MODE</span>
+        <input type="checkbox" id="antilag">
+    </div>
+    <div class="option">
+        <span>BUFF TOUCH INPUT</span>
+        <input type="checkbox" id="touch">
+    </div>
+    <div class="option">
+        <span>OPTIMIZE FPS</span>
+        <input type="checkbox" id="fps">
+    </div>
+
+    <!-- Nút Buff Max -->
+    <button class="red-btn" onclick="startBuff()">BUFF MAX</button>
+
+    <div id="buffStatus" class="msg"></div>
+    <div class="progress-container hidden" id="progressContainer">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+</div>
+
+<script>
+    const CORRECT_KEY = "FF2025";
+
+    function verifyKey() {
+        let key = document.getElementById("keyInput").value.trim();
+        let msg = document.getElementById("verifyMsg");
+
+        if (key === CORRECT_KEY) {
+            msg.textContent = "Xác minh thành công!";
+            msg.className = "msg success";
+            document.body.style.backgroundColor = "#0077b6"; // xanh nước biển
+            document.getElementById("verify-section").classList.add("hidden");
+            document.getElementById("main-section").classList.remove("hidden");
+        } else {
+            msg.textContent = "Sai key!";
+            msg.className = "msg error";
+        }
+    }
+
+    function startBuff() {
+        let status = document.getElementById("buffStatus");
+        let progressContainer = document.getElementById("progressContainer");
+        let progressBar = document.getElementById("progressBar");
+
+        status.textContent = "Đang thực hiện...";
+        status.className = "msg";
+        progressContainer.classList.remove("hidden");
+        progressBar.style.width = "0%";
+
+        let percent = 0;
+        let interval = setInterval(() => {
+            percent++;
+            progressBar.style.width = percent + "%";
+            if (percent >= 100) {
+                clearInterval(interval);
+                status.textContent = "Đã thành công!";
+                status.className = "msg success";
+            }
+        }, 50); // tốc độ chạy
+    }
+</script>
+
+</body>
+</html>
